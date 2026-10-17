@@ -366,7 +366,7 @@ function generateImage() {
 
   const sec = (title, drawBody) => {
     ctx.font = '700 28px sans-serif'; ctx.fillStyle = '#4f5df0';
-    ctx.fillText(title, pad, y); y += 16;
+    ctx.fillText(title, pad, y); y += 46;
     ctx.font = '400 26px sans-serif'; ctx.fillStyle = '#22283a';
     y = drawBody() + 26;
   };
