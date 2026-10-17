@@ -86,6 +86,16 @@ WorkBuddy 云服务数据面  /.cloud/database/rest/rpc/*
 测试中消耗的密码：`BW-SEXN-88Z4`、`BW-WJEP-DSZY` 已用完；`BW-2ATB-6CCF` 已用 1 次。
 可用测试密码（每个 3 次）：`BW-246A-4B3P` `BW-KSEM-3SYZ` `BW-V4Z7-JL45` `BW-VZ5C-PBZ7` `BW-TTUV-7B3J` `BW-4YRJ-6JU2` `BW-XY3R-XT8S` `BW-GUB8-L32W` `BW-UZ39-3BZD` `BW-A2VB-Y6MA`。
 
+## 七点五、测试便利：链接参数自动填入密码
+
+| 参数 | 行为 |
+|---|---|
+| `?c=BW-XXXX-XXXX` | 自动填入测评密码，需手动点击「验证密码」 |
+| `?c=BW-XXXX-XXXX&auto=1` | 自动填入、自动验证并直接进入答题 |
+| `admin.html?pwd=<管理密码>` | 自动填入管理员密码（不自动登录） |
+
+安全设计：验证成功后地址栏参数会被立即清除，避免复制地址分享时把密码带出去；密码不出现在页面源码，仅由链接持有者传入。专用测试密码 `BW-TEST-2222`（50 次）已预置，正式密码不会被测试耗尽。
+
 ## 八、GitHub 托管
 
 - **仓库**：<https://github.com/senlinbird/banwei-quiz>（public，main 分支）
