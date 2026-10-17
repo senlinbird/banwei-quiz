@@ -147,7 +147,18 @@ $('#btn-change-pwd').addEventListener('click', async () => {
 
 /* ---------- 入口：已有会话直接进面板 ---------- */
 (async () => {
-  if (!TOKEN) { showLogin(); return; }
+  if (!TOKEN) {
+    showLogin();
+    // ?pwd=<管理密码> 自动填入，方便反复调试；不自动登录
+    const p = (new URLSearchParams(location.search).get('pwd') || '').trim();
+    if (p) {
+      $('#admin-pwd').value = p;
+      $('#login-msg').className = 'msg';
+      $('#login-msg').textContent = '密码已自动填入，点击「登录」即可';
+      $('#btn-login').focus();
+    }
+    return;
+  }
   try {
     const d = await rpc('bw_admin_list', { p_token: TOKEN, p_q: '' });
     if (d && d.ok) showPanel(); else { TOKEN = ''; sessionStorage.removeItem('bw_admin_token'); showLogin(); }
