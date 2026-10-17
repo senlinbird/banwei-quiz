@@ -95,6 +95,7 @@ $('#btn-verify').addEventListener('click', async () => {
     msg.className = 'msg err'; msg.textContent = '密码格式应为 BW-XXXX-XXXX'; return;
   }
   const btn = $('#btn-verify'); btn.disabled = true; btn.textContent = '验证中…';
+  let passed = false;
   try {
     const data = await rpc('bw_verify', { p_code: code, p_device: deviceId() }, 10000);
     if (!data || !data.ok) {
@@ -106,15 +107,18 @@ $('#btn-verify').addEventListener('click', async () => {
       const devLeft = (typeof data.deviceLeft === 'number') ? data.deviceLeft : data.attemptsLeft;
       const left = Math.min(data.attemptsLeft, devLeft);
       msg.className = 'msg ok';
-      msg.textContent = `✅ 验证通过，本设备还可测 ${left} 次`;
+      msg.textContent = `✅ 验证通过，本设备还可测 ${left} 次，正在进入测评…`;
       $('#btn-start').classList.remove('hidden');
       cleanQuery();
+      passed = true;
     }
   } catch (e) {
     msg.className = 'msg err'; msg.textContent = e.message;
   }
   btn.disabled = false; btn.textContent = '验证密码';
-  if (pendingAuto) { pendingAuto = false; setTimeout(startQuiz, 500); }
+  // 验证通过后自动进入答题（保留「开始测评」按钮作为兜底）
+  if (passed) { pendingAuto = false; setTimeout(startQuiz, 260); }
+  else if (pendingAuto) { pendingAuto = false; }
 });
 $('#btn-start').addEventListener('click', startQuiz);
 $('#pwd-input').addEventListener('keydown', e => { if (e.key === 'Enter') $('#btn-verify').click(); });
