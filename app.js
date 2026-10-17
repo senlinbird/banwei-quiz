@@ -50,6 +50,35 @@ function show(id) {
 window.addEventListener('offline', () => toast('⚠️ 网络已断开，答题进度仍保留在本页'));
 window.addEventListener('online', () => toast('✅ 网络已恢复，可以继续操作'));
 
+/* ---------- 设备标识（每台设备共 3 次测评机会） ---------- */
+const DEV_KEY = 'bw_did';
+function newDeviceId() {
+  try {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID().replace(/-/g, '');
+  } catch (e) { /* 降级 */ }
+  let s = '';
+  const alphabet = 'abcdef0123456789';
+  for (let i = 0; i < 32; i++) s += alphabet[Math.floor(Math.random() * alphabet.length)];
+  return s;
+}
+function deviceId() {
+  let id = '';
+  try { id = localStorage.getItem(DEV_KEY) || ''; } catch (e) { /* 隐私模式 */ }
+  if (!/^[A-Za-z0-9_-]{16,64}$/.test(id)) {
+    // localStorage 不可用或被清时，用 cookie 兜底，尽量保持同一台设备计数连续
+    const m = document.cookie.match(/(?:^|;\s*)bw_did=([A-Za-z0-9_-]{16,64})/);
+    id = m ? m[1] : newDeviceId();
+  }
+  try { localStorage.setItem(DEV_KEY, id); } catch (e) { /* 忽略 */ }
+  try { document.cookie = 'bw_did=' + id + '; max-age=31536000; path=/; SameSite=Lax'; } catch (e) { /* 忽略 */ }
+  return id;
+}
+/* 测试用：?resetdev=1 重置本设备标识（等同于清除本站数据，仅影响本机） */
+if (/[?&]resetdev=1/.test(location.search)) {
+  try { localStorage.removeItem(DEV_KEY); } catch (e) { /* 忽略 */ }
+  try { document.cookie = 'bw_did=; max-age=0; path=/'; } catch (e) { /* 忽略 */ }
+}
+
 /* ---------- 密码门 ---------- */
 let pendingAuto = false;   // ?auto=1 时为 true，验证通过后自动进入答题
 
@@ -67,13 +96,17 @@ $('#btn-verify').addEventListener('click', async () => {
   }
   const btn = $('#btn-verify'); btn.disabled = true; btn.textContent = '验证中…';
   try {
-    const data = await rpc('bw_verify', { p_code: code }, 10000);
+    const data = await rpc('bw_verify', { p_code: code, p_device: deviceId() }, 10000);
     if (!data || !data.ok) {
       msg.className = 'msg err'; msg.textContent = (data && data.msg) || '验证失败，请重试';
       $('#btn-start').classList.add('hidden');
+      if (data && data.deviceBlocked) $('#pwd-input').blur();
     } else {
       state.code = code; state.token = data.token;
-      msg.className = 'msg ok'; msg.textContent = `✅ 验证通过，剩余 ${data.attemptsLeft} 次测评机会`;
+      const devLeft = (typeof data.deviceLeft === 'number') ? data.deviceLeft : data.attemptsLeft;
+      const left = Math.min(data.attemptsLeft, devLeft);
+      msg.className = 'msg ok';
+      msg.textContent = `✅ 验证通过，本设备还可测 ${left} 次`;
       $('#btn-start').classList.remove('hidden');
       cleanQuery();
     }
@@ -130,9 +163,15 @@ async function submitQuiz() {
   if (btn.disabled) return;
   btn.disabled = true; btn.textContent = '生成中…';
   try {
-    const data = await rpc('bw_submit', { p_code: state.code, p_answers: state.answers, p_token: state.token }, 20000);
+    const data = await rpc('bw_submit', { p_code: state.code, p_answers: state.answers, p_token: state.token, p_device: deviceId() }, 20000);
     if (!data || !data.ok) {
-      if (data && data.retryable) {
+      if (data && data.deviceBlocked) {
+        alert((data.msg || '本设备的测评机会已用完') + '\n如需更多机会，请联系管理员。');
+        show('#screen-gate');
+        state.token = '';
+        $('#btn-start').classList.add('hidden');
+        $('#pwd-input').value = state.code;
+      } else if (data && data.retryable) {
         alert((data.msg || '答题会话已失效') + '\n重新验证后请重新作答（本次未扣次数）');
         show('#screen-gate');
         $('#pwd-input').value = state.code;
