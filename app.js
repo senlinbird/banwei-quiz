@@ -51,6 +51,13 @@ window.addEventListener('offline', () => toast('⚠️ 网络已断开，答题�
 window.addEventListener('online', () => toast('✅ 网络已恢复，可以继续操作'));
 
 /* ---------- 密码门 ---------- */
+let pendingAuto = false;   // ?auto=1 时为 true，验证通过后自动进入答题
+
+/* 验证成功后清掉地址栏参数，避免用户复制地址时把密码带出去 */
+function cleanQuery() {
+  try { history.replaceState(null, '', location.pathname); } catch (e) { /* 忽略 */ }
+}
+
 $('#btn-verify').addEventListener('click', async () => {
   const code = $('#pwd-input').value.trim().toUpperCase();
   const msg = $('#gate-msg');
@@ -68,11 +75,13 @@ $('#btn-verify').addEventListener('click', async () => {
       state.code = code; state.token = data.token;
       msg.className = 'msg ok'; msg.textContent = `✅ 验证通过，剩余 ${data.attemptsLeft} 次测评机会`;
       $('#btn-start').classList.remove('hidden');
+      cleanQuery();
     }
   } catch (e) {
     msg.className = 'msg err'; msg.textContent = e.message;
   }
   btn.disabled = false; btn.textContent = '验证密码';
+  if (pendingAuto) { pendingAuto = false; setTimeout(startQuiz, 500); }
 });
 $('#btn-start').addEventListener('click', startQuiz);
 $('#pwd-input').addEventListener('keydown', e => { if (e.key === 'Enter') $('#btn-verify').click(); });
@@ -373,12 +382,32 @@ function toast(text) {
   clearTimeout(t._timer); t._timer = setTimeout(() => t.classList.remove('show'), 2600);
 }
 
-/* ---------- 入口：支持 ?r=<结果ID> 分享直达 ---------- */
+/* ---------- 入口 ---------- */
+/* ?r=<结果ID>  分享直达报告
+   ?c=<密码>    自动填入测评密码（方便反复测试）
+   ?c=<密码>&auto=1  自动填入并自动验证、直接进入答题 */
 (function init() {
-  const rid = new URLSearchParams(location.search).get('r');
+  const qs = new URLSearchParams(location.search);
+
+  const rid = qs.get('r');
   if (rid) {
     show('#screen-result');
     $('#result-body').innerHTML = '<div class="card"><p>报告加载中…</p></div>';
     loadResult(rid);
+    return;
+  }
+
+  const code = (qs.get('c') || '').trim().toUpperCase();
+  if (/^BW-[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(code)) {
+    $('#pwd-input').value = code;
+    const auto = String(qs.get('auto') || '').toLowerCase();
+    if (auto === '1' || auto === 'true' || auto === 'yes') {
+      pendingAuto = true;
+      setTimeout(() => $('#btn-verify').click(), 120);
+    } else {
+      $('#pwd-input').focus();
+      $('#gate-msg').className = 'msg';
+      $('#gate-msg').textContent = '密码已自动填入，点击「验证密码」即可开始';
+    }
   }
 })();
