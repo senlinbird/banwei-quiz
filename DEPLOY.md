@@ -86,7 +86,17 @@ WorkBuddy 云服务数据面  /.cloud/database/rest/rpc/*
 测试中消耗的密码：`BW-SEXN-88Z4`、`BW-WJEP-DSZY` 已用完；`BW-2ATB-6CCF` 已用 1 次。
 可用测试密码（每个 3 次）：`BW-246A-4B3P` `BW-KSEM-3SYZ` `BW-V4Z7-JL45` `BW-VZ5C-PBZ7` `BW-TTUV-7B3J` `BW-4YRJ-6JU2` `BW-XY3R-XT8S` `BW-GUB8-L32W` `BW-UZ39-3BZD` `BW-A2VB-Y6MA`。
 
-## 八、本地版与线上版的关系
+## 八、GitHub 托管
+
+- **仓库**：<https://github.com/senlinbird/banwei-quiz>（public，main 分支）
+- **GitHub Pages**：<https://senlinbird.github.io/banwei-quiz/>（source：`main` 分支 `/docs` 目录，入口页自动跳转到正式站点）
+- **为什么运行站点不在 GitHub Pages**：云服务数据面对请求 `Origin` 做精确匹配，只接受应用绑定的保留域名；
+  从 `*.github.io` 发起的 RPC 会返回 `403 access_denied`（实测）。这是平台级安全策略。
+- **更新方法**：修改本目录源码后重新推送到 `main`（Pages 会自动重建 `docs/`），
+  运行站点则需在部署侧重新发布（见第五节）。
+- **本仓库还包含** `selfhost/`：零依赖 Node.js 自托管版，`npm start` 即可在自有服务器运行全部功能。
+
+## 九、本地版与线上版的关系
 
 - `banwei-quiz/`：Node 零依赖版（server.js + JSON 文件存储），适合本地演示，功能等价。
 - `banwei-quiz-online/`：线上版（静态前端 + 云数据库 RPC），当前公网运行的就是它。
