@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="description" content="班味浓度检测——测测你的班味超标没">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧪</text></svg>">
+<title>班味浓度检测 · 测测你的班味超标没</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- 密码门 -->
+  <section id="screen-gate" class="screen active">
+    <div class="hero">
+      <div class="hero-badge">🧪 全网打工人都在测</div>
+      <h1>班味浓度<span class="hl">检测</span></h1>
+      <p class="slogan">测测你的班味超标没</p>
+    </div>
+    <div class="card">
+      <label class="field-label">请输入测评密码</label>
+      <input id="pwd-input" type="text" placeholder="如：BW-XXXX-XXXX" autocomplete="off" autocapitalize="characters">
+      <div id="gate-msg" class="msg"></div>
+      <button id="btn-verify" class="btn primary">验证密码</button>
+      <button id="btn-start" class="btn gold hidden">开始测评 →</button>
+      <p class="hint">每个密码可完成 3 次有效测评 · 约 2 分钟</p>
+    </div>
+  </section>
+
+  <!-- 答题页 -->
+  <section id="screen-quiz" class="screen">
+    <div class="quiz-top">
+      <div class="progress-track"><div id="progress-bar"></div></div>
+      <div class="progress-text"><span id="q-now">1</span> / 12</div>
+    </div>
+    <div class="card quiz-card">
+      <div class="q-tag" id="q-tag">第 1 题</div>
+      <h2 id="q-scene"></h2>
+      <div id="options"></div>
+      <div class="quiz-nav">
+        <button id="btn-prev" class="btn ghost">← 上一题</button>
+        <button id="btn-next" class="btn primary hidden">下一题 →</button>
+        <button id="btn-submit" class="btn gold hidden">提交答卷 ✓</button>
+      </div>
+    </div>
+    <p class="hint center">凭第一感觉选，答案没有好坏</p>
+  </section>
+
+  <!-- 结果页 -->
+  <section id="screen-result" class="screen">
+    <div id="result-body"></div>
+    <div class="result-actions">
+      <button id="btn-image" class="btn gold">🖼️ 生成分享长图</button>
+      <button id="btn-copy" class="btn primary">🔗 复制结果链接</button>
+      <button id="btn-retry" class="btn ghost">再测一次</button>
+    </div>
+    <div id="share-area" class="hidden">
+      <canvas id="share-canvas"></canvas>
+      <div class="share-tip" id="share-tip">长按图片可保存或转发</div>
+      <button id="btn-download" class="btn primary">⬇️ 下载长图</button>
+      <button id="btn-native-share" class="btn gold hidden">📲 保存到相册 / 分享</button>
+    </div>
+  </section>
+
+</div>
+
+<div id="boot-error" class="hidden" style="position:fixed;inset:0;background:#f4f5fa;padding:40px 24px;z-index:999;text-align:center;">
+  <h2 style="margin-top:60px;">😕 加载失败</h2>
+  <p style="color:#69708a;margin:12px 0 20px;" id="boot-msg">请检查网络后刷新页面</p>
+  <button class="btn primary" style="max-width:240px;margin:0 auto;" onclick="location.reload()">刷新重试</button>
+</div>
+
+<script src="/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js"></script>
+<script src="/questions-data.js"></script>
+<script src="/results-data.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>

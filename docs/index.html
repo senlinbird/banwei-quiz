@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>班味浓度检测 · 测测你的班味超标没</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧪</text></svg>">
+<meta name="description" content="班味浓度检测——12 道职场场景题，测测你的班味超标没。">
+<style>
+  :root{
+    --ink:#22283a; --sub:#69708a; --line:#e8eaf2; --bg:#f4f5fa;
+    --brand:#4f5df0; --brand2:#7a5cf0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.7;
+    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 18px;
+  }
+  .wrap{width:100%;max-width:460px;text-align:center}
+  .badge{
+    display:inline-block;background:#eef0ff;color:var(--brand);
+    font-size:13px;font-weight:600;padding:5px 14px;border-radius:999px;margin-bottom:18px;
+  }
+  h1{font-size:38px;letter-spacing:2px;line-height:1.25}
+  h1 .hl{color:var(--brand)}
+  .slogan{margin-top:10px;color:var(--sub);font-size:15px}
+  .card{
+    background:#fff;border-radius:20px;padding:24px 20px;margin-top:26px;
+    box-shadow:0 8px 28px rgba(34,40,58,.08);
+  }
+  .go{
+    display:block;width:100%;border:none;border-radius:14px;padding:15px;
+    background:linear-gradient(135deg,#4f5df0,#7a5cf0);color:#fff;
+    font-size:16.5px;font-weight:700;font-family:inherit;cursor:pointer;
+    text-decoration:none;transition:transform .12s,opacity .2s;
+  }
+  .go:active{transform:scale(.98)}
+  .countdown{margin-top:14px;font-size:13px;color:var(--sub)}
+  .countdown b{color:var(--brand);font-weight:700}
+  .note{
+    margin-top:22px;font-size:12.5px;color:var(--sub);text-align:left;
+    background:#fff;border-radius:14px;padding:16px 18px;border:1px solid var(--line);
+  }
+  .note h2{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:8px}
+  .note p+p{margin-top:8px}
+  .note code{background:#f2f3f9;border-radius:5px;padding:1px 6px;font-size:11.5px}
+  .links{margin-top:18px;font-size:13px}
+  .links a{color:var(--brand);text-decoration:none;margin:0 8px}
+  .links a:hover{text-decoration:underline}
+  @media (max-width:420px){h1{font-size:32px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="badge">🧪 全网打工人都在测</div>
+  <h1>班味浓度<span class="hl">检测</span></h1>
+  <p class="slogan">测测你的班味超标没</p>
+
+  <div class="card">
+    <a class="go" id="go" href="https://banwei-quiz-54989.app.workbuddy.host/">立即开始测评 →</a>
+    <p class="countdown" id="cd"><b>3</b> 秒后自动跳转到正式站点…</p>
+  </div>
+
+  <div class="note">
+    <h2>关于这个页面</h2>
+    <p>本站是纯静态前端，密码校验、次数扣减与计分全部在云端数据库的函数中完成。云服务数据面对请求 <code>Origin</code> 做精确匹配，只接受应用绑定的域名，因此运行站点必须从该域名加载 —— GitHub Pages 属于不同源，无法直连接口。</p>
+    <p>所以本仓库负责源码托管：你可以在这里查看全部前端代码、题库、结果文案与自托管版本。</p>
+  </div>
+
+  <div class="links">
+    <a href="https://github.com/senlinbird/banwei-quiz" target="_blank" rel="noopener">源码仓库</a>
+    <a href="https://github.com/senlinbird/banwei-quiz/blob/main/DEPLOY.md" target="_blank" rel="noopener">部署文档</a>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var target = 'https://banwei-quiz-54989.app.workbuddy.host/';
+    var left = 3;
+    var el = document.getElementById('cd');
+    var timer = setInterval(function () {
+      left--;
+      if (left <= 0) {
+        clearInterval(timer);
+        location.replace(target);
+        return;
+      }
+      el.innerHTML = '<b>' + left + '</b> 秒后自动跳转到正式站点…';
+    }, 1000);
+    // 用户已手动点击则取消自动跳转
+    document.getElementById('go').addEventListener('click', function () { clearInterval(timer); });
+  })();
+</script>
+</body>
+</html>

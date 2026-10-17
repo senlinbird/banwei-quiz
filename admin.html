@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧪</text></svg>">
+<title>管理后台 · 班味浓度检测</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="admin-wrap">
+
+  <div id="login-box" class="login-box card">
+    <h2 style="text-align:center;">🔐 管理后台登录</h2>
+    <p class="hint" style="margin-bottom:14px;">仅限管理员访问 · 会话有效期12小时</p>
+    <input id="admin-pwd" type="password" placeholder="管理员密码" style="width:100%;border:2px solid var(--line);border-radius:12px;padding:14px 16px;font-size:16px;outline:none;">
+    <div id="login-msg" class="msg"></div>
+    <button id="btn-login" class="btn primary">登录</button>
+  </div>
+
+  <div id="panel" class="hidden">
+    <div class="admin-head">
+      <h1>🧪 班味浓度检测 · 密码管理</h1>
+      <button id="btn-logout" class="tool-btn">退出登录</button>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat"><div class="n" id="stat-total">0</div><div class="t">密码总数</div></div>
+      <div class="stat"><div class="n" id="stat-left">0</div><div class="t">剩余可用次数</div></div>
+      <div class="stat"><div class="n" id="stat-results">0</div><div class="t">累计测评数</div></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-bottom:12px;">批量生成密码</h3>
+      <div class="form-row">
+        <div class="fg"><label>生成数量</label><input id="gen-count" type="number" value="10" min="1" max="500"></div>
+        <div class="fg"><label>每个密码可用次数</label><input id="gen-attempts" type="number" value="3" min="1" max="99"></div>
+        <button id="btn-generate" class="tool-btn primary">生成</button>
+      </div>
+      <div class="form-row" style="margin-top:14px;">
+        <div class="fg"><label>搜索密码</label><input id="search" class="search-bar" placeholder="输入密码关键字筛选"></div>
+        <button id="btn-export" class="tool-btn">⬇️ 导出 CSV</button>
+      </div>
+      <div id="gen-result" class="msg ok" style="margin-top:10px;"></div>
+    </div>
+
+    <table class="pw-table">
+      <thead><tr><th>密码</th><th>总次数</th><th>剩余</th><th>状态</th><th>创建时间</th><th>操作</th></tr></thead>
+      <tbody id="pw-body"></tbody>
+    </table>
+
+    <div class="card" style="margin-top:18px;">
+      <h3 style="margin-bottom:12px;">修改管理员密码</h3>
+      <div class="form-row">
+        <div class="fg"><label>新密码（至少8位）</label><input id="new-pwd" type="password" placeholder="输入新密码"></div>
+        <button id="btn-change-pwd" class="tool-btn">更新密码</button>
+      </div>
+      <div id="pwd-result" class="msg"></div>
+    </div>
+  </div>
+
+</div>
+
+<div id="boot-error" class="hidden" style="position:fixed;inset:0;background:#f4f5fa;padding:40px 24px;z-index:999;text-align:center;">
+  <h2 style="margin-top:60px;">😕 加载失败</h2>
+  <p style="color:#69708a;margin:12px 0 20px;" id="boot-msg">请检查网络后刷新页面</p>
+  <button class="btn primary" style="max-width:240px;margin:0 auto;" onclick="location.reload()">刷新重试</button>
+</div>
+
+<script src="/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js"></script>
+<script src="/admin.js"></script>
+</body>
+</html>
